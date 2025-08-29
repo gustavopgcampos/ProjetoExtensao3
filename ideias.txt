@@ -4,3 +4,4 @@ Features:
 Inspirações:
     1. https://www.figma.com/design/uscUttaNgZ5FAdlF4hH7es/Landing-Page-e-Blog--Community-?node-id=3-811&t=Q3rgCkQ4BVfVNRi1-0
     2. https://www.figma.com/design/8kNYvmBKmuWSo1Wj6aNe7a/Avalia%C3%A7%C3%A3o-de-Produto-%E2%80%A2-Desafio-39--Community-?node-id=3-376&p=f&t=ms2qHjvzOIZdYUID-0 
+    3. https://www.agro-on.pt/pt/
