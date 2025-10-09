@@ -1,0 +1,36 @@
+main {
+  min-height: 91vh;
+}
+
+.stat-card {
+  border: none;
+  border-left: 4px solid var(--cor-primaria);
+}
+
+.producer-card {
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.producer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.producer-card .card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+.btn-save {
+  color: var(--bs-secondary-color);
+  transition: color 0.3s ease;
+}
+
+.btn-save:hover {
+  color: var(--cor-primaria);
+}
+
+.btn-save.saved {
+  color: var(--cor-primaria);
+}
