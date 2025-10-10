@@ -39,9 +39,9 @@ form.addEventListener("submit", async (event) => {
         const userData = userDocSnap.data();
 
         if (userData.type == "retailer") {
-            window.location.href = "retailerHome.html"
+            window.location.href = "retailer-home.html"
         } else if (userData.type == "producer") {
-            window.location.href = "producerHome.html"
+            window.location.href = "producer-home.html"
         }
     } catch (error) {
         console.log(error)

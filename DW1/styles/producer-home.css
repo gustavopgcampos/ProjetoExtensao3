@@ -1,0 +1,43 @@
+main {
+  min-height: 91vh;
+}
+
+.product-card {
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-card .card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Estilo para o card especial de Adicionar Novo Produto */
+.add-product-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed #ccc;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 200px;
+  /* Garante uma altura mínima clicável */
+}
+
+.add-product-card:hover {
+  background-color: #e9ecef;
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.add-product-card .material-icons {
+  font-size: 3rem;
+}

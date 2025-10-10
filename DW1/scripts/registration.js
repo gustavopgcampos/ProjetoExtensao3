@@ -48,7 +48,7 @@ retailerForm.addEventListener("submit", async (event) => {
 
         await setDoc(doc(db, "users", user.uid), userData);
 
-        window.location.href = "retailerHome.html";
+        window.location.href = "retailer-home.html";
 
     } catch (error) {
         console.error("Error: ", error);
@@ -95,7 +95,7 @@ producerForm.addEventListener("submit", async (event) => {
         }
 
         await setDoc(doc(db, "users", user.uid), userData);
-        window.location.href = "producerHome.html";
+        window.location.href = "producer-home.html";
 
     } catch (error) {
         console.error("Error: ", error);
