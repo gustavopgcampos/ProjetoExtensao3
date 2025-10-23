@@ -29,18 +29,18 @@ let userData;
 
 async function getProducerProducts(uid) {
   const produtosCol = collection(db, "products");
-  const q = query(produtosCol, where("producer_id", "==", uid));
+  const q = query(produtosCol, where("producerId", "==", uid));
   const querySnapshot = await getDocs(q);
   const products = [];
   querySnapshot.forEach((doc) => {
     const product = new Product(
       doc.id,
-      doc.data().producer_id,
+      doc.data().producerId,
       doc.data().unit,
       doc.data().name,
       doc.data().description,
       doc.data().stock,
-      new Date(doc.data().created_at.seconds * 1000),
+      new Date(doc.data().createdAt.seconds * 1000),
       doc.data().price
     );
     products.push(product);
@@ -118,8 +118,8 @@ saveButton.addEventListener("click", async () => {
       unit: unit,
       stock: stock,
       description: description,
-      created_at: new Date(),
-      producer_id: userUid,
+      createdAt: new Date(),
+      producerId: userUid,
     };
 
     await addDoc(collection(db, "products"), productData),

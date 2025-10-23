@@ -28,23 +28,26 @@ document.addEventListener("DOMContentLoaded", () => {
         const cepInput = event.target;
         const cep = cepInput.value.replace(/\D/g, "");
 
-        let stateInput, cityInput;
+        let stateInput, cityInput, zipCodeInput;
         if (cepInput.id === "retailerZipCode") {
             stateInput = retailerState;
             cityInput = retailerCity;
+            zipCodeInput = retailerZipCode;
         } else if (cepInput.id === "producerZipCode") {
             stateInput = producerState;
             cityInput = producerCity;
+            zipCodeInput = producerZipCode
         } else {
             return;
         }
 
-        stateInput.value = "";
-        cityInput.value = "";
-
         if (cep.length !== 8) {
             return;
         }
+
+        zipCodeInput.disabled = true;
+        stateInput.value = "";
+        cityInput.value = "";
 
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -60,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error("Erro ao buscar CEP:", error);
             alert("Erro ao consultar o CEP. Tente novamente.");
+        } finally {
+            zipCodeInput.disabled = false;
         }
     }
 
@@ -113,6 +118,7 @@ retailerForm.addEventListener("submit", async (event) => {
             state,
             city,
             type: "retailer",
+            createdAt: new Date()
         };
 
         await setDoc(doc(db, "users", user.uid), userData);
@@ -169,6 +175,7 @@ producerForm.addEventListener("submit", async (event) => {
             city,
             password,
             type: "producer",
+            createdAt: new Date()
         };
 
         await setDoc(doc(db, "users", user.uid), userData);

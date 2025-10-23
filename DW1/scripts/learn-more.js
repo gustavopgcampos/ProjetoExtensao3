@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
       name,
       email,
       subject,
-      message
+      message,
+      createdAt: new Date()
     }
 
     try {
