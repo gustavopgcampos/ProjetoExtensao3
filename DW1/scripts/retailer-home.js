@@ -9,6 +9,7 @@ import {
     getDocs,
     query,
     where,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 import { Product } from "../models/Product.js";
@@ -17,6 +18,20 @@ import { Producer } from "../models/Producer.js"
 initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
+let userUid = ""
+let userFavorites = new Set();
+
+async function loadUserFavorites() {
+    if (!userUid) return;
+
+    userFavorites.clear();
+    const q = query(collection(db, "favorites"), where("retailerId", "==", userUid));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+        userFavorites.add(doc.data().producerId);
+    });
+}
 
 async function getProducers() {
     const producersCol = collection(db, "users");
@@ -40,8 +55,15 @@ async function getProducers() {
 }
 
 function renderProducersInPage(producers) {
+    const producersContainer = document.getElementById("producers");
+    let html = "";
+
     producers.forEach((producer) => {
-        document.getElementById("producers").innerHTML += `
+        const isSaved = userFavorites.has(producer.id);
+        const iconName = isSaved ? 'bookmark' : 'bookmark_border';
+        const savedClass = isSaved ? 'saved' : '';
+
+        html += `
         <div class="col-md-6 col-lg-4">
             <div class="card producer-card h-100">
                 <div class="card-body d-flex flex-column">
@@ -54,23 +76,67 @@ function renderProducersInPage(producers) {
                     <button class="btn btn-primary view-products" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#producerProductsOffcanvas" aria-controls="producerProductsOffcanvas"
                     data-producer-id="${producer.id}" data-farm-name="${producer.farmName}">Ver Produtos</button>
-                    <a href="#" class="btn-save" title="Salvar Produtor"><span
-                        class="material-icons">bookmark_border</span></a>
+                    <a href="#" class="btn-save ${savedClass}" title="Salvar Produtor" data-producer-id="${producer.id}">
+                        <span class="material-icons">${iconName}</span>
+                    </a>
                 </div>
                 </div>
             </div>
         </div>
-    `;
+        `;
+    });
 
-        const productButtons = document.querySelectorAll('.view-products');
-        productButtons.forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const producerId = event.currentTarget.dataset.producerId;
-                const farmName = event.currentTarget.dataset.farmName;
-                await getProducerProducts(farmName, producerId);
-            });
+    producersContainer.innerHTML = html;
+
+    const productButtons = document.querySelectorAll('.view-products');
+    productButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const producerId = event.currentTarget.dataset.producerId;
+            const farmName = event.currentTarget.dataset.farmName;
+            await getProducerProducts(farmName, producerId);
         });
     });
+    const favoriteButtons = document.querySelectorAll('.btn-save');
+    favoriteButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const producerId = event.currentTarget.dataset.producerId;
+            await toggleFavoriteProducer(producerId, event.currentTarget)
+        });
+    })
+}
+
+async function toggleFavoriteProducer(producerId, buttonElement) {
+    if (!producerId || !userUid) return;
+
+    const icon = buttonElement.querySelector('span.material-icons');
+    const q = query(collection(db, "favorites"),
+        where("retailerId", "==", userUid),
+        where("producerId", "==", producerId)
+    );
+    
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+        const favoriteData = {
+            producerId,
+            retailerId: userUid,
+            createdAt: new Date()
+        };
+        await addDoc(collection(db, "favorites"), favoriteData);
+        icon.textContent = 'bookmark';
+        buttonElement.classList.add('saved');
+        userFavorites.add(producerId);
+        alert("Produtor favoritado!");
+
+    } else {
+        const docToDeleteRef = querySnapshot.docs[0].ref;
+        await deleteDoc(docToDeleteRef);
+
+        icon.textContent = 'bookmark_border';
+        buttonElement.classList.remove('saved');
+        userFavorites.delete(producerId);
+        alert("Produtor desfavoritado!");
+    }
 }
 
 async function getProducerProducts(farmName, producerId) {
@@ -98,9 +164,13 @@ function renderProductsInPage(farmName, products) {
     document.getElementById("produtos-titulo").innerHTML = `
         <h5 class="offcanvas-title fw-bold" id="offcanvasLabel">Produtos de ${farmName}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    `
+    `;
+    
+    const productListContainer = document.getElementById("lista-produtos");
+    let productsHtml = "";
+
     products.forEach((product) => {
-        document.getElementById("lista-produtos").innerHTML += `
+        productsHtml += `
             <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                 <div>
                     <strong class="d-block">${product.name}</strong>
@@ -109,18 +179,22 @@ function renderProductsInPage(farmName, products) {
                 </div>
                 <span class="badge bg-primary rounded-pill fs-6">R$ ${product.price}/${product.unit}</span>
             </li>
-        `
-    })
+        `;
+    });
+
+    productListContainer.innerHTML = productsHtml;
 }
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        userUid = user.uid;
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
         if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
-            getProducers()
+            await loadUserFavorites();
+            getProducers();
             document.getElementById("retailerName").innerHTML += `${userData.name}!`
 
             const storeNameElement = document.getElementById('storeNameDisplay');

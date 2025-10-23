@@ -121,8 +121,8 @@ saveButton.addEventListener("click", async () => {
       producerId: userUid,
     };
 
-    await addDoc(collection(db, "products"), productData),
-      alert("Produto cadastrado com sucesso!");
+    await addDoc(collection(db, "products"), productData)
+    alert("Produto cadastrado com sucesso!");
     productForm.reset();
     addProductModal.hide();
   } catch (error) {
