@@ -71,7 +71,6 @@ function renderProductsInPage(products) {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     userUid = user.uid;
-    console.log("UID do usuário:", user.uid);
 
     const userDocRef = doc(db, "users", user.uid);
     const userDocSnap = await getDoc(userDocRef);
