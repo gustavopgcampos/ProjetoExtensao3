@@ -95,7 +95,7 @@
           </div>
           <div class="col-lg-6">
             <div class="card p-4 border-0 shadow-sm">
-              <form>
+              <form id="contactForm">
                 <div class="mb-3">
                   <label for="contactName" class="form-label">Nome Completo</label>
                   <input type="text" class="form-control" id="contactName" required>
@@ -112,7 +112,7 @@
                   <label for="contactMessage" class="form-label">Sua Mensagem</label>
                   <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 py-2">Enviar Mensagem</button>
+                <button type="button" class="btn btn-primary w-100 py-2" id="btnSendMessage">Enviar Mensagem</button>
               </form>
             </div>
           </div>
@@ -138,5 +138,7 @@
       </div>
     </div>
   </footer>
+
+  <script src="../scripts/learn-more.js" type="module"></script>
 </body>
 </html>
