@@ -1,10 +1,15 @@
-CREATE DATABASE AGROLINK;
-USE AGROLINK;
+DROP DATABASE IF EXISTS agrolink;
+CREATE DATABASE agrolink;
+USE agrolink;
 
 CREATE TABLE Users (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	email VARCHAR(150) NOT NULL UNIQUE,
-	name VARCHAR(250) NOT NULL
+    phone CHAR(11) NOT NULL,
+    zip_code CHAR(8) NOT NULL,
+    city VARCHAR(200) NOT NULL,
+    state VARCHAR(200) NOT NULL,
+	name VARCHAR(250) NOT NULL	
 );
 
 CREATE TABLE Retailer (
@@ -31,10 +36,10 @@ CREATE TABLE Favoritos (
 CREATE TABLE Produtos (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(150) NOT NULL,
-    valor_unitario DECIMAL(10, 2) NOT NULL,
-    unidade VARCHAR(10) NOT NULL,
-    descricao VARCHAR(200) NOT NULL,
-    estoque_disponivel DOUBLE NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    unit_measure VARCHAR(10) NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    available_inventory DOUBLE NOT NULL,
    
     producer_id INT NOT NULL,
     FOREIGN KEY (producer_id) REFERENCES Producer(id)

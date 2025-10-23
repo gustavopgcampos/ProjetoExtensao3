@@ -1,25 +1,84 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js"
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js"
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import {
+    getFirestore,
+    setDoc,
+    doc,
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 
-const app = initializeApp(firebaseConfig);
-const retailerForm = document.getElementById('retailerForm');
-const producerForm = document.getElementById('producerForm');
+initializeApp(firebaseConfig);
+const retailerForm = document.getElementById("retailerForm");
+const producerForm = document.getElementById("producerForm");
+const retailerErrorMessage = document.getElementById("retailerErrorMessage");
+const producerErrorMessage = document.getElementById("producerErrorMessage");
 
-const retailerErrorMessage = document.getElementById('retailerErrorMessage');
-const producerErrorMessage = document.getElementById('producerErrorMessage');
+document.addEventListener("DOMContentLoaded", () => {
+    const retailerZipCode = document.getElementById("retailerZipCode");
+    const retailerState = document.getElementById("retailerState");
+    const retailerCity = document.getElementById("retailerCity");
+    const producerZipCode = document.getElementById("producerZipCode");
+    const producerState = document.getElementById("producerState");
+    const producerCity = document.getElementById("producerCity");
 
-function alertRemove(errorDiv) {
-    const alert = errorDiv.querySelector('.alert');
+    async function handleZipCodeBlur(event) {
+        const cepInput = event.target;
+        const cep = cepInput.value.replace(/\D/g, "");
 
-    function removeAlert(event) {
-        if (!alert.contains(event.target)) {
-            errorDiv.innerHTML = '';
-            document.removeEventListener("click", removeAlert)
+        let stateInput, cityInput;
+        if (cepInput.id === "retailerZipCode") {
+            stateInput = retailerState;
+            cityInput = retailerCity;
+        } else if (cepInput.id === "producerZipCode") {
+            stateInput = producerState;
+            cityInput = producerCity;
+        } else {
+            return;
+        }
+
+        stateInput.value = "";
+        cityInput.value = "";
+
+        if (cep.length !== 8) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+                alert("CEP não encontrado.");
+                console.warn("ViaCEP: CEP não localizado.");
+            } else {
+                stateInput.value = data.uf;
+                cityInput.value = data.localidade;
+            }
+        } catch (error) {
+            console.error("Erro ao buscar CEP:", error);
+            alert("Erro ao consultar o CEP. Tente novamente.");
         }
     }
 
+    if (retailerZipCode) {
+        retailerZipCode.addEventListener("blur", handleZipCodeBlur);
+    }
+    if (producerZipCode) {
+        producerZipCode.addEventListener("blur", handleZipCodeBlur);
+    }
+});
+
+function alertRemove(errorDiv) {
+    const alert = errorDiv.querySelector(".alert");
+    function removeAlert(event) {
+        if (!alert.contains(event.target)) {
+            errorDiv.innerHTML = "";
+            document.removeEventListener("click", removeAlert);
+        }
+    }
     setTimeout(() => {
         document.addEventListener("click", removeAlert);
     }, 0);
@@ -29,36 +88,44 @@ retailerForm.addEventListener("submit", async (event) => {
     try {
         event.preventDefault();
 
-        const name = document.getElementById('retailerName').value;
-        const storeName = document.getElementById('retailerStore').value;
-        const email = document.getElementById('retailerEmail').value;
-        const password = document.getElementById('retailerPassword').value;
+        const name = document.getElementById("retailerName").value;
+        const storeName = document.getElementById("retailerStore").value;
+        const email = document.getElementById("retailerEmail").value;
+        const password = document.getElementById("retailerPassword").value;
+        const phone = document.getElementById("retailerPhone").value;
+        const state = document.getElementById("retailerState").value;
+        const city = document.getElementById("retailerCity").value;
 
         const auth = getAuth();
         const db = getFirestore();
 
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         const user = userCredential.user;
         const userData = {
-            name: name,
-            storeName: storeName,
-            email: email,
-            type: "retailer"
-        }
+            name,
+            storeName,
+            email,
+            phone,
+            state,
+            city,
+            type: "retailer",
+        };
 
         await setDoc(doc(db, "users", user.uid), userData);
 
         window.location.href = "retailer-home.html";
-
     } catch (error) {
         console.error("Error: ", error);
-
-        let mensagem = "Ocorreu um erro, tente novamente!"
+        let mensagem = "Ocorreu um erro, tente novamente!";
 
         if (error.code == "auth/email-already-in-use") {
-            mensagem = "O E-mail que foi fornecido já está em uso!"
+            mensagem = "O E-mail que foi fornecido já está em uso!";
         } else if (error.code == "auth/weak-password") {
-            mensagem = "Sua senha deve ser maior que 6 caracteres!"
+            mensagem = "Sua senha deve ser maior que 6 caracteres!";
         }
 
         retailerErrorMessage.innerHTML = `
@@ -68,7 +135,7 @@ retailerForm.addEventListener("submit", async (event) => {
             </div>
         `;
 
-        alertRemove(retailerErrorMessage)
+        alertRemove(retailerErrorMessage);
     }
 });
 
@@ -80,32 +147,40 @@ producerForm.addEventListener("submit", async (event) => {
         const farmName = document.getElementById("producerFarm").value;
         const email = document.getElementById("producerEmail").value;
         const password = document.getElementById("producerPassword").value;
+        const phone = document.getElementById("producerPhone").value;
+        const state = document.getElementById("producerState").value;
+        const city = document.getElementById("producerCity").value;
 
         const auth = getAuth();
         const db = getFirestore();
 
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         const user = userCredential.user;
         const userData = {
-            name: name,
-            farmName: farmName,
-            email: email,
-            password: password,
-            type: "producer"
-        }
+            name,
+            farmName,
+            email,
+            phone,
+            state,
+            city,
+            password,
+            type: "producer",
+        };
 
         await setDoc(doc(db, "users", user.uid), userData);
         window.location.href = "producer-home.html";
-
     } catch (error) {
         console.error("Error: ", error);
-
-        let mensagem = "Ocorreu um erro, tente novamente!"
+        let mensagem = "Ocorreu um erro, tente novamente!";
 
         if (error.code == "auth/email-already-in-use") {
-            mensagem = "O E-mail que foi fornecido já está em uso!"
+            mensagem = "O E-mail que foi fornecido já está em uso!";
         } else if (error.code == "auth/weak-password") {
-            mensagem = "Sua senha deve ser maior que 6 caracteres!"
+            mensagem = "Sua senha deve ser maior que 6 caracteres!";
         }
 
         producerErrorMessage.innerHTML = `
@@ -115,6 +190,6 @@ producerForm.addEventListener("submit", async (event) => {
             </div>
         `;
 
-        alertRemove(producerErrorMessage)
+        alertRemove(producerErrorMessage);
     }
 });
