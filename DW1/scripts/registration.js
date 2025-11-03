@@ -2,15 +2,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebas
 import {
     getAuth,
     createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import {
     getFirestore,
     setDoc,
+    getDoc,
     doc,
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 
 initializeApp(firebaseConfig);
+const googleButton = document.getElementById("googleButton");
 const retailerForm = document.getElementById("retailerForm");
 const producerForm = document.getElementById("producerForm");
 const retailerErrorMessage = document.getElementById("retailerErrorMessage");
@@ -87,6 +91,21 @@ function alertRemove(errorDiv) {
     setTimeout(() => {
         document.addEventListener("click", removeAlert);
     }, 0);
+}
+
+function getSelectedRole() {
+
+    const retailerTab = document.getElementById("pills-retailer-tab");
+    const producerTab = document.getElementById("pills-producer-tab")
+
+    if (retailerTab.classList.contains('active')) {
+        return 'retailer';
+    } else if (producerTab.classList.contains('active')) {
+        return 'producer';
+    } else {
+        return 'retailer';
+    }
+
 }
 
 retailerForm.addEventListener("submit", async (event) => {
@@ -199,4 +218,69 @@ producerForm.addEventListener("submit", async (event) => {
 
         alertRemove(producerErrorMessage);
     }
+});
+
+googleButton.addEventListener("click", async () => {
+
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    const db = getFirestore();
+    const role = getSelectedRole();
+
+    try {
+
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+            throw new Error("Conta do Google já cadastrada.");
+        }
+
+        await setDoc(userRef, {
+            type: role,
+            email: user.email,
+            name: user.displayName,
+            createdAt: new Date()
+        });
+
+        if (role === "retailer") {
+            window.location.href = "retailer-home.html"
+        } else {
+            window.location.href = "producer-home.html";
+        }
+
+    } catch (error) {
+        console.log("Error", error)
+
+        let mensagem = "Ocorreu um erro, tente novamente!";
+
+        if (error.code == "auth/email-already-in-use") {
+            mensagem = "O E-mail que foi fornecido já está em uso!";
+        } else if (error.code == "auth/weak-password") {
+            mensagem = "Sua senha deve ser maior que 6 caracteres!";
+        }
+
+        if (role === 'retailer') {
+
+            retailerErrorMessage.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Erro:</strong> ${mensagem}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            `;
+
+        } else if (role === 'producer') {
+
+            producerErrorMessage.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Erro:</strong> ${mensagem}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            `;
+
+        }
+    }
+
 });

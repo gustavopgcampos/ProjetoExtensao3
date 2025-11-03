@@ -1,323 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="../styles/registration.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-  </head>
 
-  <body>
-    <a href="../index.html" class="back-to-home-link">
-      <span class="material-icons">arrow_back</span>
-      Voltar para Home
-    </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="../styles/registration.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
 
-    <div class="card shadow-lg registration-card m-3">
-      <div class="card-body p-4 p-md-5">
-        <h2 class="text-center fw-bold mb-4">Crie sua Conta</h2>
+<body>
+  <a href="../index.html" class="back-to-home-link">
+    <span class="material-icons">arrow_back</span>
+    Voltar para Home
+  </a>
 
-        <ul
-          class="nav nav-pills nav-fill mb-4 profile-selector"
-          id="pills-tab"
-          role="tablist"
-        >
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="pills-retailer-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-retailer"
-              type="button"
-              role="tab"
-              aria-controls="pills-retailer"
-              aria-selected="true"
-            >
-              Sou Varejista
+  <div class="card shadow-lg registration-card m-3">
+    <div class="card-body p-4 p-md-5">
+      <h2 class="text-center fw-bold mb-4">Crie sua Conta</h2>
+
+      <ul class="nav nav-pills nav-fill mb-4 profile-selector" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pills-retailer-tab" data-bs-toggle="pill" data-bs-target="#pills-retailer"
+            type="button" role="tab" aria-controls="pills-retailer" aria-selected="true">
+            Sou Varejista
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-producer-tab" data-bs-toggle="pill" data-bs-target="#pills-producer"
+            type="button" role="tab" aria-controls="pills-producer" aria-selected="false">
+            Sou Produtor
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-retailer" role="tabpanel" aria-labelledby="pills-retailer-tab">
+          <form id="retailerForm">
+            <div class="mb-3">
+              <label for="retailerName" class="form-label">Nome Completo</label>
+              <input type="text" class="form-control" id="retailerName" required />
+            </div>
+            <div class="mb-3">
+              <label for="retailerStore" class="form-label">Nome da Loja</label>
+              <input type="text" class="form-control" id="retailerStore" required />
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="retailerEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="retailerEmail" required />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="retailerPhone" class="form-label">Celular</label>
+                  <input type="text" class="form-control" id="retailerPhone" required maxlength="11" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="retailerZipCode" class="form-label">CEP</label>
+                  <input type="text" class="form-control" id="retailerZipCode" required maxlength="8" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="retailerState" class="form-label">Estado</label>
+                  <input type="text" class="form-control" id="retailerState" required readonly />
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="retailerCity" class="form-label">Cidade</label>
+              <input type="text" class="form-control" id="retailerCity" required readonly />
+            </div>
+            <div class="mb-3">
+              <label for="retailerPassword" class="form-label">Senha</label>
+              <input type="password" class="form-control" id="retailerPassword" required />
+            </div>
+            <button id="retailerSignUp" type="submit" class="btn btn-primary w-100 mt-3 py-2">
+              Cadastrar como Varejista
             </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-producer-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-producer"
-              type="button"
-              role="tab"
-              aria-controls="pills-producer"
-              aria-selected="false"
-            >
-              Sou Produtor
-            </button>
-          </li>
-        </ul>
-
-        <div class="tab-content" id="pills-tabContent">
-          <div
-            class="tab-pane fade show active"
-            id="pills-retailer"
-            role="tabpanel"
-            aria-labelledby="pills-retailer-tab"
-          >
-            <form id="retailerForm">
-              <div class="mb-3">
-                <label for="retailerName" class="form-label"
-                  >Nome Completo</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="retailerName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="retailerStore" class="form-label"
-                  >Nome da Loja</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="retailerStore"
-                  required
-                />
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="retailerEmail" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="retailerEmail"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="retailerPhone" class="form-label"
-                      >Celular</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="retailerPhone"
-                      required
-                      maxlength="11"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="retailerZipCode" class="form-label">CEP</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="retailerZipCode"
-                      required
-                      maxlength="8"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="retailerState" class="form-label">Estado</label>
-                    <input type="text" class="form-control" id="retailerState" required readonly />
-                  </div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="retailerCity" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="retailerCity" required readonly />
-              </div>
-              <div class="mb-3">
-                <label for="retailerPassword" class="form-label">Senha</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="retailerPassword"
-                  required
-                />
-              </div>
-              <button
-                id="retailerSignUp"
-                type="submit"
-                class="btn btn-primary w-100 mt-3 py-2"
-              >
-                Cadastrar como Varejista
-              </button>
-            </form>
-            <div id="retailerErrorMessage" class="mt-3"></div>
-          </div>
-
-          <div
-            class="tab-pane fade"
-            id="pills-producer"
-            role="tabpanel"
-            aria-labelledby="pills-producer-tab"
-          >
-            <form id="producerForm">
-              <div class="mb-3">
-                <label for="producerName" class="form-label"
-                  >Nome Completo</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="producerName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="producerFarm" class="form-label"
-                  >Nome da Propriedade/Produção</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="producerFarm"
-                  required
-                />
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="producerEmail" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="producerEmail"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="producerPhone" class="form-label"
-                      >Celular</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="producerPhone"
-                      required
-                      maxlength="11"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="producerZipCode" class="form-label">CEP</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="producerZipCode"
-                      required
-                      maxlength="8"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mb-3">
-                    <label for="producerState" class="form-label">Estado</label>
-                    <input type="text" class="form-control" id="producerState" required readonly/>
-                  </div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="producerCity" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="producerCity" required readonly/>
-              </div>
-
-              <div class="mb-3">
-                <label for="producerPassword" class="form-label">Senha</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="producerPassword"
-                  required
-                />
-              </div>
-              <button
-                id="producerSignUp"
-                type="submit"
-                class="btn btn-primary w-100 mt-3 py-2"
-              >
-                Cadastrar como Produtor
-              </button>
-            </form>
-
-            <div id="producerErrorMessage" class="mt-3"></div>
-          </div>
+          </form>
+          <div id="retailerErrorMessage" class="mt-3"></div>
         </div>
 
-        <div class="separator">ou</div>
+        <div class="tab-pane fade" id="pills-producer" role="tabpanel" aria-labelledby="pills-producer-tab">
+          <form id="producerForm">
+            <div class="mb-3">
+              <label for="producerName" class="form-label">Nome Completo</label>
+              <input type="text" class="form-control" id="producerName" required />
+            </div>
+            <div class="mb-3">
+              <label for="producerFarm" class="form-label">Nome da Propriedade/Produção</label>
+              <input type="text" class="form-control" id="producerFarm" required />
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="producerEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="producerEmail" required />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="producerPhone" class="form-label">Celular</label>
+                  <input type="text" class="form-control" id="producerPhone" required maxlength="11" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="producerZipCode" class="form-label">CEP</label>
+                  <input type="text" class="form-control" id="producerZipCode" required maxlength="8" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="producerState" class="form-label">Estado</label>
+                  <input type="text" class="form-control" id="producerState" required readonly />
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="producerCity" class="form-label">Cidade</label>
+              <input type="text" class="form-control" id="producerCity" required readonly />
+            </div>
 
-        <button class="btn btn-google w-100 py-2">
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            style="display: block"
-          >
-            <path
-              fill="#EA4335"
-              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-            ></path>
-            <path
-              fill="#4285F4"
-              d="M46.98 24.55c0-1.57-.15-3.09-.42-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-            ></path>
-            <path
-              fill="#FBBC05"
-              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-            ></path>
-            <path
-              fill="#34A853"
-              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-            ></path>
-            <path fill="none" d="M0 0h48v48H0z"></path>
-          </svg>
-        </button>
+            <div class="mb-3">
+              <label for="producerPassword" class="form-label">Senha</label>
+              <input type="password" class="form-control" id="producerPassword" required />
+            </div>
+            <button id="producerSignUp" type="submit" class="btn btn-primary w-100 mt-3 py-2">
+              Cadastrar como Produtor
+            </button>
+          </form>
 
-        <div class="text-center mt-4">
-          <small class="text-muted"
-            >Já tem uma conta?
-            <a href="./login.html" class="text-primary fw-bold"
-              >Faça Login</a
-            ></small
-          >
+          <div id="producerErrorMessage" class="mt-3"></div>
         </div>
       </div>
-    </div>
 
-    <script type="module" src="../scripts/registration.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+      <div class="separator">ou</div>
+
+      <button id="googleButton" class="btn btn-google w-100 py-2">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+          xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block">
+          <path fill="#EA4335"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z">
+          </path>
+          <path fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.42-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z">
+          </path>
+          <path fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z">
+          </path>
+          <path fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z">
+          </path>
+          <path fill="none" d="M0 0h48v48H0z"></path>
+        </svg>
+      </button>
+
+      <div class="text-center mt-4">
+        <small class="text-muted">Já tem uma conta?
+          <a href="./login.html" class="text-primary fw-bold">Faça Login</a></small>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../scripts/registration.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
