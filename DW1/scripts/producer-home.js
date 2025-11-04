@@ -13,7 +13,8 @@ import {
   query,
   where,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 import { Product } from "./../models/Product.js";
@@ -30,6 +31,21 @@ const addProductModal = new bootstrap.Modal(addProductModalEl);
 let userUid;
 let userData;
 let currentEditingProductId = null;
+
+async function loadProducerStats(uid) {
+  try {
+    const favoritesCol = collection(db, "favorites");
+    const q = query(favoritesCol, where("producerId", "==", uid));
+
+    const snapshot = await getCountFromServer(q);
+    const count = snapshot.data().count;
+
+    document.getElementById("favoritesCount").textContent = count;
+  } catch (error) {
+    console.error("Erro ao buscar contagem de favoritos: ", error);
+    document.getElementById("favoritesCount").textContent = "0";
+  }
+}
 
 async function getProducerProducts(uid) {
   const produtosCol = collection(db, "products");
@@ -75,17 +91,17 @@ function addProductCardListeners(products) {
   document.querySelectorAll(".btn-delete").forEach((button) => {
     button.addEventListener("click", async (e) => {
       const productId = e.currentTarget.getAttribute("data-id");
-      
+
       if (confirm("Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.")) {
         try {
-          e.currentTarget.disabled = true; 
+          e.currentTarget.disabled = true;
           e.currentTarget.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
 
           const productRef = doc(db, "products", productId);
           await deleteDoc(productRef);
-          
+
           alert("Produto excluído com sucesso!");
-          
+
           await getProducerProducts(userUid);
 
         } catch (error) {
@@ -155,7 +171,7 @@ function renderProductsInPage(products) {
     `;
   });
 
-  addProductCardListeners (products);
+  addProductCardListeners(products);
 
   document
     .querySelector(".add-product-card")
@@ -173,9 +189,11 @@ onAuthStateChanged(auth, async (user) => {
 
     if (userDocSnap.exists()) {
       userData = userDocSnap.data();
-      getProducerProducts(user.uid);
-      document.getElementById("producerName").innerHTML += `${userData.name}!`;
+      await Promise.all([
+        getProducerProducts(user.uid), loadProducerStats(user.uid)
+      ])
 
+      document.getElementById("producerName").innerHTML += `${userData.name}!`;
       const storeNameElement = document.getElementById("storeNameDisplay");
       if (storeNameElement) {
         storeNameElement.textContent = `Bem-vindo à ${userData.storeName}!`;
