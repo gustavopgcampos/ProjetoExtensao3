@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Varejista</title>
+  <title>Home - Varejista | Agrolink</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../styles/retailer-home.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,6 +69,42 @@
               <h3 class="fw-bold" id="cheapestProductPrice">...</h3>
               <p class="text-muted mb-0" id="cheapestProductName">Produto Mais Barato</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </section>
+
+    <section class="mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">Filtrar Produtores</h5>
+          <div class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+              <label for="filterRegion" class="form-label">Por Região (Estado)</label>
+              <input type="text" id="filterRegion" class="form-control" placeholder="Digite a sigla (Ex: SP, RJ...)">
+            </div>
+
+            <div class="col-md-5">
+              <label for="filterProduct" class="form-label">Por Produto</label>
+              <div class="input-group">
+                <input type="text" id="filterProduct" class="form-control" placeholder="Ex: Tomate, Alface...">
+                <button class="btn btn-outline-secondary" type="button" id="filterProductBtn">
+                  <span class="material-icons" style="font-size: 1.2rem; vertical-align: middle;">search</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-center justify-content-between pt-3 pt-md-0">
+              <div class_models="form-check form-switch ms-md-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="filterSaved">
+                <label class="form-check-label" for="filterSaved">Apenas Salvos</label>
+              </div>
+              <button class="btn btn-link btn-sm text-decoration-none" id="filterClearBtn">Limpar</button>
+            </div>
+
           </div>
         </div>
       </div>

@@ -23,22 +23,26 @@ const auth = getAuth();
 const db = getFirestore();
 let userUid = ""
 let userFavorites = new Set();
+let allProducers = [];
+
 const contactModalEl = document.getElementById('producerContactModal');
+const filterRegionEl = document.getElementById("filterRegion");
+const filterSavedEl = document.getElementById("filterSaved");
+const filterProductEl = document.getElementById("filterProduct");
+const filterProductBtn = document.getElementById("filterProductBtn");
+const filterClearBtn = document.getElementById("filterClearBtn");
 
 if (contactModalEl) {
     contactModalEl.addEventListener('show.bs.modal', (event) => {
         const button = event.relatedTarget;
-
         const farmName = button.getAttribute('data-farm-name');
         const name = button.getAttribute('data-name');
         const phone = button.getAttribute('data-phone');
         const email = button.getAttribute('data-email');
-
         const modalTitle = contactModalEl.querySelector('#producerContactModalLabel');
         const modalProducerName = contactModalEl.querySelector('#contactModalProducerName');
         const modalProducerPhone = contactModalEl.querySelector('#contactModalProducerPhone');
         const modalProducerEmail = contactModalEl.querySelector('#contactModalProducerEmail');
-
         modalTitle.textContent = `Contato - ${farmName}`;
         modalProducerName.textContent = name;
         modalProducerPhone.textContent = phone || 'Não informado';
@@ -48,11 +52,9 @@ if (contactModalEl) {
 
 async function loadUserFavorites() {
     if (!userUid) return;
-
     userFavorites.clear();
     const q = query(collection(db, "favorites"), where("retailerId", "==", userUid));
     const querySnapshot = await getDocs(q);
-
     querySnapshot.forEach((doc) => {
         userFavorites.add(doc.data().producerId);
     });
@@ -71,10 +73,8 @@ async function loadDashboardStats(uid) {
             where("createdAt", ">=", today),
             where("createdAt", "<", tomorrow)
         );
-
         const newProductsSnapshot = await getCountFromServer(qNewProducts);
         const newProductsCount = newProductsSnapshot.data().count;
-
         document.getElementById("newProductsTodayCount").textContent = newProductsCount;
     } catch (error) {
         console.error("Erro ao buscar contagem de novos produtos: ", error);
@@ -91,7 +91,6 @@ async function loadDashboardStats(uid) {
         );
 
         const cheapestSnapshot = await getDocs(qCheapest);
-
         const priceEl = document.getElementById("cheapestProductPrice");
         const nameEl = document.getElementById("cheapestProductName");
 
@@ -101,9 +100,8 @@ async function loadDashboardStats(uid) {
         } else {
             const cheapestProduct = cheapestSnapshot.docs[0].data();
             const price = cheapestProduct.price.toFixed(2).replace('.', ',');
-
             priceEl.textContent = `R$ ${price} / ${cheapestProduct.unit}`;
-            nameEl.textContent = `Produto mais barato: ${cheapestProduct.name}`;
+            nameEl.textContent = cheapestProduct.name;
         }
 
     } catch (error) {
@@ -118,7 +116,9 @@ async function getProducers() {
     const producersCol = collection(db, "users");
     const q = query(producersCol, where("type", "==", "producer"));
     const querySnapshot = await getDocs(q);
-    const producers = [];
+    
+    allProducers = [];
+    
     querySnapshot.forEach((doc) => {
         const producer = new Producer(
             doc.id,
@@ -130,14 +130,19 @@ async function getProducers() {
             doc.data().state,
             new Date(doc.data().createdAt.seconds * 1000),
         );
-        producers.push(producer);
+        allProducers.push(producer);
     });
-    renderProducersInPage(producers);
+    
+    applyFiltersAndRender();
 }
 
 function renderProducersInPage(producers) {
     const producersContainer = document.getElementById("producers");
     let html = "";
+
+    if (producers.length === 0) {
+        html = `<div class="col-12"><p class="text-center text-muted">Nenhum produtor encontrado com os filtros selecionados.</p></div>`;
+    }
 
     producers.forEach((producer) => {
         const isSaved = userFavorites.has(producer.id);
@@ -191,9 +196,11 @@ function renderProducersInPage(producers) {
             await getProducerProducts(farmName, producerId);
         });
     });
+    
     const favoriteButtons = document.querySelectorAll('.btn-save');
     favoriteButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
+            event.preventDefault();
             const producerId = event.currentTarget.dataset.producerId;
             await toggleFavoriteProducer(producerId, event.currentTarget)
         });
@@ -221,19 +228,16 @@ async function toggleFavoriteProducer(producerId, buttonElement) {
         icon.textContent = 'bookmark';
         buttonElement.classList.add('saved');
         userFavorites.add(producerId);
-        alert("Produtor favoritado!");
-
     } else {
         const docToDeleteRef = querySnapshot.docs[0].ref;
         await deleteDoc(docToDeleteRef);
-
         icon.textContent = 'bookmark_border';
         buttonElement.classList.remove('saved');
         userFavorites.delete(producerId);
-        alert("Produtor desfavoritado!");
     }
 
     document.getElementById("savedProducersCount").textContent = userFavorites.size;
+    applyFiltersAndRender();
 }
 
 async function getProducerProducts(farmName, producerId) {
@@ -262,10 +266,8 @@ function renderProductsInPage(farmName, products) {
         <h5 class="offcanvas-title fw-bold" id="offcanvasLabel">Produtos de ${farmName}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     `;
-
     const productListContainer = document.getElementById("lista-produtos");
     let productsHtml = "";
-
     products.forEach((product) => {
         productsHtml += `
             <li class="list-group-item d-flex justify-content-between align-items-center py-3">
@@ -278,8 +280,62 @@ function renderProductsInPage(farmName, products) {
             </li>
         `;
     });
-
     productListContainer.innerHTML = productsHtml;
+}
+
+async function searchProducersByProduct() {
+    const productName = filterProductEl.value.trim();
+    if (!productName) {
+        alert("Por favor, digite um nome de produto para buscar.");
+        return;
+    }
+
+    const capitalizedName = productName.charAt(0).toUpperCase() + productName.slice(1).toLowerCase();
+
+    try {
+        const qProducts = query(collection(db, "products"), where("name", "==", capitalizedName));
+        const productSnapshot = await getDocs(qProducts);
+        
+        if (productSnapshot.empty) {
+            renderProducersInPage([]);
+            return;
+        }
+
+        const producerIds = new Set();
+        productSnapshot.forEach(doc => {
+            producerIds.add(doc.data().producerId);
+        });
+
+        const matchingProducers = allProducers.filter(p => producerIds.has(p.id));
+
+        renderProducersInPage(matchingProducers);
+        
+        filterRegionEl.value = "";
+        filterSavedEl.checked = false;
+
+    } catch (error) {
+        console.error("Erro ao buscar por produto: ", error);
+        alert("Ocorreu um erro ao buscar por produtos.");
+    }
+}
+
+function applyFiltersAndRender() {
+    const regionInput = filterRegionEl.value.trim().toUpperCase();
+    const saved = filterSavedEl.checked;
+
+    let filteredProducers = [...allProducers];
+
+    if (regionInput) {
+        filteredProducers = filteredProducers.filter(p => p.state.toUpperCase().startsWith(regionInput));
+    }
+
+    if (saved) {
+        filteredProducers = filteredProducers.filter(p => userFavorites.has(p.id));
+    }
+    
+    filterProductEl.value = ""; 
+
+    renderProducersInPage(filteredProducers);
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -292,13 +348,10 @@ onAuthStateChanged(auth, async (user) => {
             const userData = userDocSnap.data();
 
             await loadUserFavorites();
-            document.getElementById("savedProducersCount").textContent = userFavorites.size;
-
             await loadDashboardStats(user.uid);
-
-            getProducers();
+            await getProducers();
+            
             document.getElementById("retailerName").innerHTML += `${userData.name}!`
-
             const storeNameElement = document.getElementById('storeNameDisplay');
             if (storeNameElement) {
                 storeNameElement.textContent = `Bem-vindo à ${userData.storeName}!`;
@@ -310,4 +363,21 @@ onAuthStateChanged(auth, async (user) => {
         console.log("Nenhum usuário logado. Redirecionando...");
         window.location.href = "index.html";
     }
+});
+
+filterRegionEl.addEventListener('input', applyFiltersAndRender);
+filterSavedEl.addEventListener('change', applyFiltersAndRender);
+filterProductBtn.addEventListener('click', searchProducersByProduct);
+
+filterProductEl.addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        searchProducersByProduct();
+    }
+});
+
+filterClearBtn.addEventListener('click', () => {
+    filterRegionEl.value = "";
+    filterSavedEl.checked = false;
+    filterProductEl.value = "";
+    applyFiltersAndRender();
 });
