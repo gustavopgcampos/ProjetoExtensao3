@@ -50,7 +50,7 @@
         <div class="col-md-4">
           <div class="card shadow-sm stat-card">
             <div class="card-body">
-              <h3 class="fw-bold">12</h3>
+              <h3 class="fw-bold" id="savedProducersCount">...</h3>
               <p class="text-muted mb-0">Produtores Salvos</p>
             </div>
           </div>
@@ -58,7 +58,7 @@
         <div class="col-md-4">
           <div class="card shadow-sm stat-card">
             <div class="card-body">
-              <h3 class="fw-bold">47</h3>
+              <h3 class="fw-bold" id="newProductsTodayCount">...</h3>
               <p class="text-muted mb-0">Novos Produtos Hoje</p>
             </div>
           </div>
@@ -66,8 +66,8 @@
         <div class="col-md-4">
           <div class="card shadow-sm stat-card">
             <div class="card-body">
-              <h3 class="fw-bold">3</h3>
-              <p class="text-muted mb-0">Pedidos em Aberto</p>
+              <h3 class="fw-bold" id="cheapestProductPrice">...</h3>
+              <p class="text-muted mb-0" id="cheapestProductName">Produto Mais Barato</p>
             </div>
           </div>
         </div>
@@ -78,17 +78,45 @@
       <h2 class="fw-bold mb-4">Descubra Novos Produtores</h2>
       <div class="row g-4" id="producers"></div>
     </section>
-
   </main>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="producerProductsOffcanvas" aria-labelledby="offcanvasLabel">
     <div class="offcanvas-header border-bottom" id="produtos-titulo">
-      
+
     </div>
     <div class="offcanvas-body">
       <p class="text-muted mb-3">Lista de produtos:</p>
       <ul class="list-group list-group-flush" id="lista-produtos">
       </ul>
+    </div>
+  </div>
+
+  <div class="modal fade" id="producerContactModal" tabindex="-1" aria-labelledby="producerContactModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="producerContactModalLabel">Informações de Contato</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted">Entre em contato com:</p>
+          <h4 id="contactModalProducerName" class="fw-bold mb-3">...</h4>
+          <p class="mb-2">
+            <span class="material-icons" style="vertical-align: middle; font-size: 1.2rem;">phone</span>
+            <strong>Telefone:</strong>
+            <span id="contactModalProducerPhone">...</span>
+          </p>
+          <p>
+            <span class="material-icons" style="vertical-align: middle; font-size: 1.2rem;">email</span>
+            <strong>Email:</strong>
+            <span id="contactModalProducerEmail">...</span>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
     </div>
   </div>
 

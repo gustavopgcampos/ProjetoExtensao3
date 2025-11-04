@@ -9,7 +9,10 @@ import {
     getDocs,
     query,
     where,
-    deleteDoc
+    deleteDoc,
+    getCountFromServer,
+    orderBy,
+    limit
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { firebaseConfig } from "./config.js";
 import { Product } from "../models/Product.js";
@@ -20,6 +23,28 @@ const auth = getAuth();
 const db = getFirestore();
 let userUid = ""
 let userFavorites = new Set();
+const contactModalEl = document.getElementById('producerContactModal');
+
+if (contactModalEl) {
+    contactModalEl.addEventListener('show.bs.modal', (event) => {
+        const button = event.relatedTarget;
+
+        const farmName = button.getAttribute('data-farm-name');
+        const name = button.getAttribute('data-name');
+        const phone = button.getAttribute('data-phone');
+        const email = button.getAttribute('data-email');
+
+        const modalTitle = contactModalEl.querySelector('#producerContactModalLabel');
+        const modalProducerName = contactModalEl.querySelector('#contactModalProducerName');
+        const modalProducerPhone = contactModalEl.querySelector('#contactModalProducerPhone');
+        const modalProducerEmail = contactModalEl.querySelector('#contactModalProducerEmail');
+
+        modalTitle.textContent = `Contato - ${farmName}`;
+        modalProducerName.textContent = name;
+        modalProducerPhone.textContent = phone || 'Não informado';
+        modalProducerEmail.textContent = email || 'Não informado';
+    });
+}
 
 async function loadUserFavorites() {
     if (!userUid) return;
@@ -31,6 +56,62 @@ async function loadUserFavorites() {
     querySnapshot.forEach((doc) => {
         userFavorites.add(doc.data().producerId);
     });
+}
+
+async function loadDashboardStats(uid) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    try {
+        const productsCol = collection(db, "products");
+        const qNewProducts = query(
+            productsCol,
+            where("createdAt", ">=", today),
+            where("createdAt", "<", tomorrow)
+        );
+
+        const newProductsSnapshot = await getCountFromServer(qNewProducts);
+        const newProductsCount = newProductsSnapshot.data().count;
+
+        document.getElementById("newProductsTodayCount").textContent = newProductsCount;
+    } catch (error) {
+        console.error("Erro ao buscar contagem de novos produtos: ", error);
+        document.getElementById("newProductsTodayCount").textContent = "0";
+    }
+
+    try {
+        const productsCol = collection(db, "products");
+        const qCheapest = query(
+            productsCol,
+            where("stock", ">", 0),
+            orderBy("price", "asc"),
+            limit(1)
+        );
+
+        const cheapestSnapshot = await getDocs(qCheapest);
+
+        const priceEl = document.getElementById("cheapestProductPrice");
+        const nameEl = document.getElementById("cheapestProductName");
+
+        if (cheapestSnapshot.empty) {
+            priceEl.textContent = "N/A";
+            nameEl.textContent = "Nenhum produto em estoque";
+        } else {
+            const cheapestProduct = cheapestSnapshot.docs[0].data();
+            const price = cheapestProduct.price.toFixed(2).replace('.', ',');
+
+            priceEl.textContent = `R$ ${price} / ${cheapestProduct.unit}`;
+            nameEl.textContent = `Produto mais barato: ${cheapestProduct.name}`;
+        }
+
+    } catch (error) {
+        console.error("Erro ao buscar produto mais barato: ", error);
+        document.getElementById("cheapestProductPrice").textContent = "Erro";
+        document.getElementById("cheapestProductName").textContent = "Produto Mais Barato";
+    }
+    document.getElementById("savedProducersCount").textContent = userFavorites.size;
 }
 
 async function getProducers() {
@@ -73,9 +154,23 @@ function renderProducersInPage(producers) {
                 <p class="card-text text-muted"><span class="material-icons"
                     style="font-size: 1rem; vertical-align: text-bottom;">location_on</span> ${producer.city}, ${producer.state}</p>
                 <div class="mt-auto d-flex justify-content-between align-items-center pt-3">
-                    <button class="btn btn-primary view-products" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#producerProductsOffcanvas" aria-controls="producerProductsOffcanvas"
-                    data-producer-id="${producer.id}" data-farm-name="${producer.farmName}">Ver Produtos</button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm btn-contact" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#producerContactModal"
+                            data-name="${producer.name}"
+                            data-farm-name="${producer.farmName}"
+                            data-phone="${producer.phone}"
+                            data-email="${producer.email}">
+                            Contato
+                        </button>
+                        
+                        <button class="btn btn-primary btn-sm view-products" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#producerProductsOffcanvas" aria-controls="producerProductsOffcanvas"
+                            data-producer-id="${producer.id}" data-farm-name="${producer.farmName}">
+                            Ver Produtos
+                        </button>
+                    </div>
                     <a href="#" class="btn-save ${savedClass}" title="Salvar Produtor" data-producer-id="${producer.id}">
                         <span class="material-icons">${iconName}</span>
                     </a>
@@ -113,7 +208,7 @@ async function toggleFavoriteProducer(producerId, buttonElement) {
         where("retailerId", "==", userUid),
         where("producerId", "==", producerId)
     );
-    
+
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
@@ -137,6 +232,8 @@ async function toggleFavoriteProducer(producerId, buttonElement) {
         userFavorites.delete(producerId);
         alert("Produtor desfavoritado!");
     }
+
+    document.getElementById("savedProducersCount").textContent = userFavorites.size;
 }
 
 async function getProducerProducts(farmName, producerId) {
@@ -165,7 +262,7 @@ function renderProductsInPage(farmName, products) {
         <h5 class="offcanvas-title fw-bold" id="offcanvasLabel">Produtos de ${farmName}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     `;
-    
+
     const productListContainer = document.getElementById("lista-produtos");
     let productsHtml = "";
 
@@ -193,7 +290,12 @@ onAuthStateChanged(auth, async (user) => {
 
         if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
+
             await loadUserFavorites();
+            document.getElementById("savedProducersCount").textContent = userFavorites.size;
+
+            await loadDashboardStats(user.uid);
+
             getProducers();
             document.getElementById("retailerName").innerHTML += `${userData.name}!`
 
