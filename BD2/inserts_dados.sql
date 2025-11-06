@@ -66,6 +66,8 @@ INSERT INTO Retailer (store_name, user_id) VALUES
 
 INSERT INTO Product (name, unit_price, unit_measure, description, available_inventory, producer_id) VALUES 
 ('Laranja Pera', 4.50, 'kg', 'Laranja Pera Rio, doce e suculenta.', 500.0, 1),
+('Alface Crespa', 2.80, 'un', 'Alface crespa fresca, cultivada localmente.', 200.0, 1),
+('Batata Doce', 5.50, 'kg', 'Batata doce rosada, perfeita para assar.', 450.0, 1),
 ('Limão Tahiti', 3.99, 'kg', 'Limão Tahiti (caipira) verde.', 300.0, 2),
 ('Tomate Italiano', 8.00, 'kg', 'Tomate tipo italiano maduro.', 150.0, 3),
 ('Milho Verde', 1.50, 'un', 'Espiga de milho verde pamonha/cozido.', 1000.0, 4),
