@@ -44,7 +44,9 @@ JOIN
     User U ON P.user_id = U.id;
     
 -- (3) View Parametrizável
--- 
+-- Busca todos os dados de um produto, mas apenas do produtor especificado no momento da chamada.
+SELECT * FROM Vw_Full_Product_Details
+WHERE producer_id = 12;
 
 -- (4) View de Segurança
 -- Expõe informações da tabela User, mas oculta colunas sensíveis (email, telefone e cep)
