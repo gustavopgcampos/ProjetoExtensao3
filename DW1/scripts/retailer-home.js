@@ -153,11 +153,10 @@ function renderProducersInPage(producers) {
         <div class="col-md-6 col-lg-4">
             <div class="card producer-card h-100">
                 <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-bold">${producer.farmName}</h5>
+                <h5 class="card-title fw-bold">${producer.farmName ?? "-"}</h5>
                 <p class="card-text text-muted mb-1"><span
                     class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">${producer.name}</span></p>
-                <p class="card-text text-muted"><span class="material-icons"
-                    style="font-size: 1rem; vertical-align: text-bottom;">location_on</span> ${producer.city}, ${producer.state}</p>
+                ${producer?.state ? `<p class="card-text text-muted"><span class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">location_on</span> ${producer.city}, ${producer.state}</p>` : ''}
                 <div class="mt-auto d-flex justify-content-between align-items-center pt-3">
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-secondary btn-sm btn-contact" 
@@ -165,7 +164,7 @@ function renderProducersInPage(producers) {
                             data-bs-target="#producerContactModal"
                             data-name="${producer.name}"
                             data-farm-name="${producer.farmName}"
-                            data-phone="${producer.phone}"
+                            data-phone="${producer.phone ?? "-"}"
                             data-email="${producer.email}">
                             Contato
                         </button>
