@@ -19,7 +19,6 @@ BEGIN
     COMMIT;
     SELECT 'Transação concluída com sucesso.' AS Resultado;
 END //
-
 DELIMITER ;
 
 CALL Proc_Create_Retailer();

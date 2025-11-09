@@ -127,3 +127,11 @@ INSERT INTO Contact (name, email, subject, message) VALUES
 ('Universidade Local', 'pesquisa@uni.edu.br', 'Pesquisa Acadêmica', 'Coleta de dados sobre a plataforma.'),
 ('Sindicato Rural', 'sind.rural@sind.com.br', 'Evento', 'Convite para a Feira AgroLocal.'),
 ('Tiago Nunes', 'tiago.n@email.com', 'Feedback', 'Adorei a plataforma, muito fácil de usar!');
+
+INSERT INTO Product_Price_Log (product_id, old_price, new_price) 
+VALUES
+(1, 4.50, 4.75),
+(2, 10.00, 9.80),
+(1, 4.75, 5.00),
+(3, 1.99, 2.25),
+(2, 9.80, 10.50);

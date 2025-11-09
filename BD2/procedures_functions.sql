@@ -56,9 +56,8 @@ FROM
     Product;
     
 -- (3) Rotina Relatorial
--- Calcula o valor total de cada item em estoque, armazenando-o em uma tabela temporária para consulta:
+-- Armazena em uma tabela temporária o estoque e preço de cada produto vinculado a um produtor:
 DELIMITER //
-
 CREATE PROCEDURE Proc_Relatorio_Produtos_Produtor(
     IN p_producer_id INT
 )

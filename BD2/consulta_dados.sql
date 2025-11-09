@@ -82,36 +82,3 @@ FROM
 WHERE 
     created_at >= CURDATE() 
     AND created_at < (CURDATE() + INTERVAL 1 DAY);
-
--- Consulta o produto mais barato no momento:
-SELECT 
-    id, 
-    name, 
-    unit_price, 
-    unit_measure
-FROM 
-    Product
-WHERE 
-    available_inventory > 0
-ORDER BY 
-    unit_price ASC
-LIMIT 1;
-
--- Consulta produtores de acordo com sua região:
-SELECT 
-    P.id, 
-    P.farm_name, 
-    U.name, 
-    U.city, 
-    U.state
-FROM 
-    Producer P
-JOIN 
-    User U ON P.user_id = U.id
-WHERE 
-    U.state = 'SP';
-    
--- Conta a quantidade de vezes que produtor com id 1 foi favoritado:
-SELECT COUNT(retailer_id) AS total_favoritos
-FROM Favorite
-WHERE producer_id = 1;
