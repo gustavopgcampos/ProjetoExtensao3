@@ -1,8 +1,4 @@
-# ProjetoExtensao3
-
-# Descrição do Projeto:
-
-# Objetivos:
+# Projeto Extensão 3 - IFSP
 
 # Tecnologias Utilizadas:
 - Desenvolvimento Web:
@@ -15,4 +11,4 @@
     - Protótipos: Figma
 
 # Site Hospedado:
-Acesse o Projeto Através do Link: <a href=""> Link </a>
+Acesse o Projeto Através do Link: <a href="https://agrolink-ifsp.netlify.app/"> Link </a>
