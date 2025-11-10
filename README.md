@@ -1,14 +1,10 @@
 # Projeto Extensão 3 - IFSP
 
-# Tecnologias Utilizadas:
+# 💻 Tecnologias Utilizadas:
 - Desenvolvimento Web:
     - Frontend: HTML, CSS, JavaScript
-    - Hospedagem, Banco de Dados e Autenticação: Firebase (BaaS)
-- Banco de Dados:
-    - MySQL
-- Interação Humano-Computador:
-    - Diagramas: 
-    - Protótipos: Figma
+    - Banco de Dados e Autenticação: Firebase (BaaS)
+    - Hospedagem: Netlify
 
 # Site Hospedado:
 Acesse o Projeto Através do Link: <a href="https://agrolink-ifsp.netlify.app/"> Link </a>
