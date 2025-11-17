@@ -94,7 +94,6 @@ function alertRemove(errorDiv) {
 }
 
 function getSelectedRole() {
-
     const retailerTab = document.getElementById("pills-retailer-tab");
     const producerTab = document.getElementById("pills-producer-tab")
 
@@ -105,7 +104,6 @@ function getSelectedRole() {
     } else {
         return 'retailer';
     }
-
 }
 
 retailerForm.addEventListener("submit", async (event) => {
@@ -141,7 +139,6 @@ retailerForm.addEventListener("submit", async (event) => {
         };
 
         await setDoc(doc(db, "users", user.uid), userData);
-
         window.location.href = "retailer-home.html";
     } catch (error) {
         console.error("Error: ", error);
@@ -221,14 +218,12 @@ producerForm.addEventListener("submit", async (event) => {
 });
 
 googleButton.addEventListener("click", async () => {
-
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
     const db = getFirestore();
     const role = getSelectedRole();
 
     try {
-
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         const userRef = doc(db, "users", user.uid);
@@ -253,7 +248,6 @@ googleButton.addEventListener("click", async () => {
 
     } catch (error) {
         console.log("Error", error)
-
         let mensagem = "Ocorreu um erro, tente novamente!";
 
         if (error.code == "auth/email-already-in-use") {
@@ -263,24 +257,19 @@ googleButton.addEventListener("click", async () => {
         }
 
         if (role === 'retailer') {
-
             retailerErrorMessage.innerHTML = `
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Erro:</strong> ${mensagem}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                 </div>
             `;
-
         } else if (role === 'producer') {
-
             producerErrorMessage.innerHTML = `
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Erro:</strong> ${mensagem}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                 </div>
             `;
-
         }
     }
-
 });

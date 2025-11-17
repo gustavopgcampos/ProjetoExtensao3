@@ -60,7 +60,7 @@ async function loadUserFavorites() {
     });
 }
 
-async function loadDashboardStats(uid) {
+async function loadDashboardStats() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
@@ -103,7 +103,6 @@ async function loadDashboardStats(uid) {
             priceEl.textContent = `R$ ${price} / ${cheapestProduct.unit}`;
             nameEl.textContent = cheapestProduct.name;
         }
-
     } catch (error) {
         console.error("Erro ao buscar produto mais barato: ", error);
         document.getElementById("cheapestProductPrice").textContent = "Erro";
@@ -234,7 +233,6 @@ async function toggleFavoriteProducer(producerId, buttonElement) {
         buttonElement.classList.remove('saved');
         userFavorites.delete(producerId);
     }
-
     document.getElementById("savedProducersCount").textContent = userFavorites.size;
     applyFiltersAndRender();
 }

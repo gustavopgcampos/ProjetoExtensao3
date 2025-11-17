@@ -28,9 +28,7 @@ function alertRemove(errorDiv) {
 }
 
 googleLoginButton.addEventListener("click", async e => {
-
     try {
-
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
@@ -45,11 +43,8 @@ googleLoginButton.addEventListener("click", async e => {
         } else {
             await signOut(auth);
         }
-
     } catch (error) {
-
         console.log(error)
-
         let mensagem = "Ocorreu um erro, tente novamente!"
 
         if (error.code == "auth/invalid-credential") {
@@ -64,7 +59,6 @@ googleLoginButton.addEventListener("click", async e => {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         `;
-
         alertRemove(errorDiv);
     }
 
@@ -90,7 +84,6 @@ form.addEventListener("submit", async (event) => {
         }
     } catch (error) {
         console.log(error)
-
         let mensagem = "Ocorreu um erro, tente novamente!"
 
         if (error.code == "auth/invalid-credential") {
@@ -105,7 +98,6 @@ form.addEventListener("submit", async (event) => {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         `;
-
         alertRemove(errorDiv);
     }
 });
