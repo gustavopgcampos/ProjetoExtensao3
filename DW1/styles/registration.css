@@ -59,6 +59,12 @@ body {
 
 .btn-primary {
   font-weight: 500;
+  background-color: var(--cor-primaria);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--cor-secundaria);
 }
 
 .back-to-home-link {
