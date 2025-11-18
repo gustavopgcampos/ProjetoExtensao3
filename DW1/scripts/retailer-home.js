@@ -36,6 +36,7 @@ if (contactModalEl) {
     contactModalEl.addEventListener('show.bs.modal', (event) => {
         const button = event.relatedTarget;
         const farmName = button.getAttribute('data-farm-name');
+        console.log(farmName)
         const name = button.getAttribute('data-name');
         const phone = button.getAttribute('data-phone');
         const email = button.getAttribute('data-email');
@@ -43,7 +44,7 @@ if (contactModalEl) {
         const modalProducerName = contactModalEl.querySelector('#contactModalProducerName');
         const modalProducerPhone = contactModalEl.querySelector('#contactModalProducerPhone');
         const modalProducerEmail = contactModalEl.querySelector('#contactModalProducerEmail');
-        modalTitle.textContent = `Contato - ${farmName}`;
+        modalTitle.textContent = `Contato ${farmName == 'undefined' ? "" : "- "+farmName}`;
         modalProducerName.textContent = name;
         modalProducerPhone.textContent = phone || 'Não informado';
         modalProducerEmail.textContent = email || 'Não informado';
@@ -260,7 +261,7 @@ async function getProducerProducts(farmName, producerId) {
 
 function renderProductsInPage(farmName, products) {
     document.getElementById("produtos-titulo").innerHTML = `
-        <h5 class="offcanvas-title fw-bold" id="offcanvasLabel">Produtos de ${farmName}</h5>
+        <h5 class="offcanvas-title fw-bold" id="offcanvasLabel">Produtos${farmName == 'undefined' ? '' : " de " + farmName}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     `;
     const productListContainer = document.getElementById("lista-produtos");

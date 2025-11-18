@@ -17,7 +17,6 @@ main {
   object-fit: cover;
 }
 
-/* Estilo para o card especial de Adicionar Novo Produto */
 .add-product-card {
   display: flex;
   align-items: center;
@@ -27,15 +26,7 @@ main {
   background-color: #f8f9fa;
   color: #6c757d;
   cursor: pointer;
-  transition: all 0.3s ease;
   min-height: 200px;
-  /* Garante uma altura mínima clicável */
-}
-
-.add-product-card:hover {
-  background-color: #e9ecef;
-  border-color: var(--cor-primaria);
-  color: var(--cor-primaria);
 }
 
 .add-product-card .material-icons {
