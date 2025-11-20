@@ -103,7 +103,6 @@ function addProductCardListeners(products) {
           alert("Produto excluído com sucesso!");
 
           await getProducerProducts(userUid);
-
         } catch (error) {
           console.error("Erro ao excluir produto: ", error);
           alert("Ocorreu um erro ao excluir o produto. Tente novamente.");
@@ -224,6 +223,15 @@ saveButton.addEventListener("click", async () => {
     const unit = document.getElementById("productUnit").value;
     const stock = parseInt(document.getElementById("productStock").value);
     const description = document.getElementById("productDescription").value;
+
+    if (price < 0) {
+      alert('Valor Unitário não pode ser um valor negativo.');
+      return;
+    }
+    if (stock < 0) {
+      alert('Estoque não pode ser um valor negativo.');
+      return;
+    }
 
     if (currentEditingProductId) {
       const productRef = doc(db, "products", currentEditingProductId);

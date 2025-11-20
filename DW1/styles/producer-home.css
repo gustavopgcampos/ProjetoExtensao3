@@ -3,13 +3,7 @@ main {
 }
 
 .product-card {
-  transition: all 0.3s ease;
   border: 1px solid #eee;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .product-card .card-img-top {

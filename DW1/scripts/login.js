@@ -61,7 +61,6 @@ googleLoginButton.addEventListener("click", async e => {
         `;
         alertRemove(errorDiv);
     }
-
 });
 
 form.addEventListener("submit", async (event) => {
